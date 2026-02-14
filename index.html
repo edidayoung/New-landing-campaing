@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ChopLife Cheap Data — Subscribe</title>
+  <meta name="description" content="Simple ChopLife Data subscription page." />
+
+  <style>
+    :root{
+      /* Airtel-ish feel (not a replica): red + clean whites */
+      --bg1:#fff7f8;
+      --bg2:#fff;
+      --card:#ffffff;
+      --ink:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+
+      --airtel:#e11937;
+      --airtel2:#ff3b5c;
+      --softRed:#ffe5ea;
+
+      --ok:#16a34a;
+      --warn:#f59e0b;
+
+      --shadow: 0 18px 45px rgba(17,24,39,.12);
+      --radius: 22px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--ink);
+      background:
+        radial-gradient(850px 520px at 22% 10%, rgba(225,25,55,.14), transparent 60%),
+        radial-gradient(720px 460px at 85% 18%, rgba(255,59,92,.10), transparent 62%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:22px 14px;
+    }
+
+    .shell{
+      width:min(440px, 100%);
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .top{
+      padding:16px 18px;
+      background: linear-gradient(135deg, var(--airtel), var(--airtel2));
+      color:white;
+      position:relative;
+    }
+    .top:after{
+      content:"";
+      position:absolute; inset:-40% -20% auto auto;
+      width:240px;height:240px;border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.28), transparent 60%);
+      transform: rotate(18deg);
+      pointer-events:none;
+    }
+
+    .brandRow{
+      display:flex;align-items:center;justify-content:center;gap:16px;
+      flex-wrap:wrap;
+    }
+    .brandLeft{
+      display:flex;align-items:center;gap:16px;
+    }
+    .mark{
+      width:50px;height:50px;border-radius:14px;
+      background: rgba(255,255,255,.95);
+      display:grid;place-items:center;
+      border:1px solid rgba(255,255,255,.30);
+      backdrop-filter: blur(8px);
+      padding:6px;
+    }
+    .mark img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+    }
+    .brandTxt b{display:block;font-size:13px;letter-spacing:.2px}
+    .brandTxt span{display:block;font-size:11px;opacity:.9}
+
+    .statusPill{
+      display:flex;align-items:center;gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.28);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background: #7CFFB2;
+      box-shadow:0 0 0 0 rgba(124,255,178,.55);
+      animation: ping 1.4s infinite;
+    }
+    @keyframes ping{
+      0%{box-shadow:0 0 0 0 rgba(124,255,178,.55)}
+      70%{box-shadow:0 0 0 10px rgba(124,255,178,0)}
+      100%{box-shadow:0 0 0 0 rgba(124,255,178,0)}
+    }
+
+    .body{
+      padding:18px;
+      text-align:center;
+    }
+
+    .chips{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+      justify-content:center;
+      margin-bottom:12px;
+    }
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:999px;
+      background:#f3f4f6;
+      border:1px solid #e5e7eb;
+      font-size:12px;color:#374151;
+      white-space:nowrap;
+    }
+    .chip.red{
+      background:var(--softRed);
+      border-color:#ffc7d1;
+      color:#991b1b;
+      font-weight:800;
+      letter-spacing:.2px;
+      animation: pulseChip 2s infinite;
+    }
+    @keyframes pulseChip{
+      0%, 100%{transform:scale(1)}
+      50%{transform:scale(1.05)}
+    }
+    .chip.selected{
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border:2px solid #f59e0b;
+      color:#92400e;
+      font-weight:800;
+      letter-spacing:.2px;
+      box-shadow: 0 4px 12px rgba(245,158,11,.3);
+      animation: glowChip 1.5s infinite;
+      font-size:11px;
+      padding:8px 12px;
+    }
+    @keyframes glowChip{
+      0%, 100%{box-shadow: 0 4px 12px rgba(245,158,11,.3)}
+      50%{box-shadow: 0 6px 20px rgba(245,158,11,.5)}
+    }
+
+    h1{
+      margin:6px 0 6px;
+      font-size:26px;
+      line-height:1.18;
+      letter-spacing:-.3px;
+    }
+    .sub{
+      margin:0 0 14px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    .infoRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin: 12px 0 12px;
+    }
+    .mini{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px;
+      background: #fff;
+    }
+    .mini b{display:block;font-size:12px}
+    .mini span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+    .mini .right{
+      display:flex;align-items:center;justify-content:space-between;gap:8px;
+    }
+    .tag{
+      font-size:12px;
+      padding:6px 10px;border-radius:12px;
+      background:#f3f4f6;border:1px solid #e5e7eb;color:#111827;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .tag.warn{
+      background:#fff7ed;border-color:#fed7aa;color:#9a3412;
+    }
+
+    .timerBox{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin-top:10px;
+    }
+    .countdown{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-weight:900;
+      background:#111827;
+      color:#fff;
+      padding:10px 12px;
+      border-radius:14px;
+      min-width:82px;
+      text-align:center;
+      box-shadow: 0 12px 24px rgba(17,24,39,.15);
+    }
+
+    .plansTitle{
+      margin: 14px 0 10px;
+      font-size:16px;
+      font-weight:900;
+      color:#111827;
+      letter-spacing:.2px;
+      text-align:center;
+    }
+
+    .plans{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+
+    .plan{
+      border:1.5px solid var(--line);
+      border-radius:18px;
+      padding:12px;
+      background: #fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      cursor:pointer;
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+    }
+    .plan:hover{
+      transform: translateY(-1px);
+      border-color:#f4a6b3;
+      box-shadow: 0 14px 28px rgba(225,25,55,.10);
+    }
+    .plan.active{
+      border-color: var(--airtel);
+      box-shadow: 0 16px 32px rgba(225,25,55,.14);
+      background: linear-gradient(180deg, rgba(225,25,55,.06), rgba(255,255,255,1));
+    }
+    .left{
+      display:flex;flex-direction:column;gap:3px;
+      min-width: 0;
+      flex:1;
+      text-align:center;
+    }
+    .price{
+      font-weight:1000;
+      color: var(--airtel);
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .main{
+      font-weight:1000;
+      font-size:16px;
+      color:#111827;
+      letter-spacing:.2px;
+    }
+    .small{
+      font-size:12px;color:var(--muted);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+
+    .radio{
+      width:20px;height:20px;border-radius:50%;
+      border:2px solid #cbd5e1;
+      display:grid;place-items:center;
+      flex:0 0 auto;
+    }
+    .radio:after{
+      content:"";
+      width:10px;height:10px;border-radius:50%;
+      background: transparent;
+    }
+    .plan.active .radio{border-color: var(--airtel)}
+    .plan.active .radio:after{background: var(--airtel)}
+
+    .cta{
+      margin-top:12px;
+      width:100%;
+      border:0;
+      cursor:pointer;
+      padding:14px 14px;
+      border-radius:18px;
+      font-weight:1000;
+      letter-spacing:.4px;
+      text-transform:uppercase;
+      color:#fff;
+      background: linear-gradient(135deg, var(--airtel), var(--airtel2));
+      box-shadow: 0 18px 40px rgba(225,25,55,.22);
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      transition: transform .12s ease, filter .12s ease;
+    }
+    .cta:hover{transform: translateY(-1px); filter: brightness(1.02)}
+    .cta:active{transform: translateY(1px)}
+    .cta[disabled]{opacity:.7; cursor:not-allowed; transform:none}
+
+    .note{
+      margin:10px 2px 0;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
+      display:flex;gap:8px;align-items:flex-start;
+      justify-content:center;
+      text-align:left;
+      max-width:400px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+    .check{
+      width:18px;height:18px;border-radius:8px;
+      background: #ecfdf5;
+      border:1px solid #bbf7d0;
+      display:grid;place-items:center;
+      color: var(--ok);
+      font-weight:1000;
+      flex:0 0 auto;
+      margin-top:1px;
+    }
+
+    .footer{
+      margin-top:18px;
+      padding:16px;
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      border-radius:16px;
+      border:1px solid #e2e8f0;
+      text-align:center;
+    }
+    .footer .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 12px;
+      background: linear-gradient(135deg, #16a34a, #15803d);
+      color:white;
+      border-radius:8px;
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.3px;
+      margin-bottom:8px;
+      box-shadow: 0 4px 12px rgba(22,163,74,.25);
+    }
+    .footer .shield{
+      font-size:14px;
+    }
+    .footer p{
+      margin:8px 0 0;
+      font-size:12px;
+      color:#475569;
+      line-height:1.5;
+      font-weight:600;
+    }
+    .footer .redirect-info{
+      margin:6px 0 0;
+      font-size:11px;
+      color:#64748b;
+      font-weight:500;
+    }
+    .footer .logos{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      margin-top:10px;
+      flex-wrap:wrap;
+    }
+    .footer .isp{
+      width:32px;
+      height:32px;
+      border-radius:8px;
+      background:white;
+      border:1px solid #e2e8f0;
+      display:grid;
+      place-items:center;
+      padding:4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.06);
+    }
+    .footer .isp img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+    }
+
+    .countdown.warning{
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      animation: blinkTimer 0.8s infinite;
+    }
+    @keyframes blinkTimer{
+      0%, 100%{opacity:1}
+      50%{opacity:0.6}
+    }
+
+    .countdown.expired{
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      animation: blinkTimer 0.5s infinite;
+      font-size:11px;
+      padding:8px 10px;
+    }
+
+    .mini.expired{
+      animation: blinkField 0.8s infinite;
+      border-color:#dc2626;
+    }
+    @keyframes blinkField{
+      0%, 100%{background:#fff; border-color:#dc2626}
+      50%{background:#fee2e2; border-color:#991b1b}
+    }
+
+    .tag.live{
+      animation: blinkLive 1.2s infinite;
+    }
+    @keyframes blinkLive{
+      0%, 100%{background:#dcfce7; border-color:#86efac; color:#166534}
+      50%{background:#bbf7d0; border-color:#4ade80; color:#14532d}
+    }
+
+    @media (max-width: 480px){
+      .shell{width:100%}
+      h1{font-size:22px}
+      .brandRow{gap:12px}
+      .mark{width:45px;height:45px}
+      .chip.selected{font-size:10px; padding:6px 10px}
+      .chip.red{font-size:11px}
+      .infoRow{grid-template-columns:1fr; gap:8px}
+      .plan{padding:10px}
+      .price{font-size:16px}
+      .main{font-size:14px}
+      .cta{padding:12px; font-size:13px}
+      .footer{padding:12px}
+      .footer .isp{width:28px; height:28px}
+    }
+    
+    @media (max-width: 360px){
+      h1{font-size:20px}
+      .chip.selected{font-size:9px; padding:5px 8px; max-width:100%}
+      .sub{font-size:12px}
+      .plansTitle{font-size:14px}
+    }
+  </style>
+</head>
+
+<body>
+  <main class="shell">
+    <div class="card">
+      <header class="top">
+        <div class="brandRow">
+          <div class="brandLeft">
+            <div class="mark">
+              <img src="img/mtn.png" alt="MTN">
+            </div>
+            <div class="mark">
+              <img src="img/glo.png" alt="Glo">
+            </div>
+            <div class="mark">
+              <img src="img/airtel.png" alt="Airtel">
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="body">
+        <div class="chips">
+          <div class="chip selected" id="selectedChip">✓ ₦200 — 4GB + 2GB Awuff</div>
+        </div>
+
+        <h1>Subscribe & enjoy ChopLife bonuses</h1>
+        <p class="sub">
+          Pick a plan below and continue to the subscription page. Clean, fast, and mobile-friendly.
+        </p>
+
+        <div class="infoRow">
+          <div class="mini">
+            <b>Status</b>
+            <div class="right" style="margin-top:6px">
+              <span>Active</span>
+              <span class="tag live">Live</span>
+            </div>
+          </div>
+          <div class="mini" id="timerField">
+            <b>Offer window</b>
+            <div class="timerBox" style="margin-top:6px">
+              <span class="tag warn">Ends soon</span>
+              <span class="countdown" id="timer">03:00</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="plansTitle">Subscribe now!!</div>
+
+        <div class="plans" id="plans">
+          <!-- Plan 1 (largest should be up) -->
+          <div class="plan active" data-plan="200" data-label="₦200 — 4GB + 2GB Awuff">
+            <div class="left">
+              <div class="price">₦200</div>
+              <div class="main">4GB</div>
+              <div class="small">+ 2GB Awuff</div>
+            </div>
+            <div class="radio" aria-hidden="true"></div>
+          </div>
+
+          <div class="plan" data-plan="99" data-label="₦99 — 1.5GB + ₦500 ChopLife Talk Time">
+            <div class="left">
+              <div class="price">₦99</div>
+              <div class="main">1.5GB</div>
+              <div class="small">+ ₦500 ChopLife Talk Time</div>
+            </div>
+            <div class="radio" aria-hidden="true"></div>
+          </div>
+
+          <div class="plan" data-plan="50" data-label="₦50 — 500MB + 1GB Mega Bonus">
+            <div class="left">
+              <div class="price">₦50</div>
+              <div class="main">500MB</div>
+              <div class="small">+ 1GB Mega Bonus</div>
+            </div>
+            <div class="radio" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <button class="cta" id="ctaBtn">Continue to Subscribe →</button>
+
+        <div class="footer">
+          <div class="badge">
+            <span class="shield">🛡️</span>
+            VERIFIED & APPROVED
+          </div>
+          <p>Approved and verified by top Nigerian ISPs</p>
+          <p class="redirect-info">You'll be redirected to complete subscription on the next page.</p>
+          <div class="logos">
+            <div class="isp"><img src="img/mtn.png" alt="MTN"></div>
+            <div class="isp"><img src="img/glo.png" alt="Glo"></div>
+            <div class="isp"><img src="img/airtel.png" alt="Airtel"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // ✅ Your CPA redirect link
+    const REDIRECT_URL = "https://xouohhz.com/cl/78f920c7484bb984";
+
+    // OPTIONAL: safe Meta Pixel tracking if fbq exists
+    function track(eventName, params = {}) {
+      try { if (typeof fbq === "function") fbq("track", eventName, params); } catch(e) {}
+    }
+
+    const plansEl = document.getElementById("plans");
+    const selectedChip = document.getElementById("selectedChip");
+    const ctaBtn = document.getElementById("ctaBtn");
+
+    let selected = {
+      price: "200",
+      label: "₦200 — 4GB + 2GB Awuff"
+    };
+
+    function setSelected(planDiv){
+      document.querySelectorAll(".plan").forEach(p => p.classList.remove("active"));
+      planDiv.classList.add("active");
+
+      selected.price = planDiv.dataset.plan;
+      selected.label = planDiv.dataset.label;
+
+      selectedChip.textContent = `✓ ${selected.label}`;
+
+      track("ViewContent", { content_name: "Plan Selected", value: Number(selected.price), currency: "NGN" });
+    }
+
+    plansEl.addEventListener("click", (e) => {
+      const plan = e.target.closest(".plan");
+      if(!plan) return;
+      setSelected(plan);
+    });
+
+    function go(){
+      track("Lead", { content_name: "Subscribe Click", value: Number(selected.price), currency: "NGN" });
+
+      ctaBtn.disabled = true;
+      
+      // Rotating loading messages
+      const messages = [
+        "Processing your request...",
+        "Connecting to network...",
+        "Verifying subscription...",
+        "Almost there...",
+        "Finalizing details...",
+        "Redirecting now..."
+      ];
+      let msgIndex = 0;
+      
+      ctaBtn.textContent = messages[0];
+      
+      const msgInterval = setInterval(() => {
+        msgIndex++;
+        if(msgIndex < messages.length){
+          ctaBtn.textContent = messages[msgIndex];
+        }
+      }, 400);
+
+      // pass selected plan in URL for your own analytics (optional)
+      const url = new URL(REDIRECT_URL);
+      url.searchParams.set("plan", selected.price);
+      url.searchParams.set("label", selected.label);
+
+      // Redirect immediately while messages are showing
+      window.location.href = url.toString();
+    }
+
+    ctaBtn.addEventListener("click", go);
+
+    // Timer (starts at 3:00, turns red at 2:30, shows "Last chance" when expired)
+    let total = 3 * 60; // 03:00
+    const timer = document.getElementById("timer");
+    const timerField = document.getElementById("timerField");
+    
+    setInterval(() => {
+      total--;
+      
+      if (total <= 0) {
+        // Timer expired - show "Last chance" and blink everything
+        timer.textContent = "LAST CHANCE";
+        timer.classList.add("expired");
+        timerField.classList.add("expired");
+      } else {
+        const m = String(Math.floor(total / 60)).padStart(2,"0");
+        const s = String(total % 60).padStart(2,"0");
+        timer.textContent = `${m}:${s}`;
+        
+        // Turn red and blink at 2:50 (170 seconds)
+        if (total <= 170) {
+          timer.classList.add("warning");
+        }
+      }
+    }, 1000);
+
+    track("PageView", { content_name: "ChopLife Subscribe Landing" });
+  </script>
+</body>
+</html>
